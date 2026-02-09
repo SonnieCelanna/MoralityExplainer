@@ -1,0 +1,1051 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OC Moral Compass Builder</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: #0a0a0f;
+            color: #e0e0e0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            padding: 30px 0;
+            border-bottom: 2px solid #2a2a3a;
+            margin-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 2.2em;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #888;
+            font-size: 1.05em;
+        }
+
+        .name-input-wrapper {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .name-input-wrapper label {
+            color: #888;
+            font-size: 0.95em;
+            display: block;
+            margin-bottom: 6px;
+        }
+
+        #char-name {
+            background: #12121c;
+            border: 2px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 10px 18px;
+            color: #e0e0e0;
+            font-size: 1.1em;
+            text-align: center;
+            width: 300px;
+            max-width: 90%;
+            transition: border-color 0.3s;
+        }
+
+        #char-name:focus {
+            outline: none;
+            border-color: #a78bfa;
+        }
+
+        .controls {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            font-weight: 600;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .btn-secondary {
+            background: #1e1e2e;
+            color: #a78bfa;
+            border: 1px solid #a78bfa;
+        }
+
+        .btn-secondary:hover {
+            background: #a78bfa;
+            color: #0a0a0f;
+        }
+
+        .btn-danger {
+            background: #1e1e2e;
+            color: #f87171;
+            border: 1px solid #f87171;
+        }
+
+        .btn-danger:hover {
+            background: #f87171;
+            color: #0a0a0f;
+        }
+
+        .layer {
+            background: #12121c;
+            border: 1px solid #2a2a3a;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            transition: border-color 0.3s ease;
+        }
+
+        .layer:hover {
+            border-color: #3a3a5a;
+        }
+
+        .layer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .layer h2 {
+            font-size: 1.3em;
+            color: #a78bfa;
+        }
+
+        .layer-number {
+            background: #7c3aed;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85em;
+            font-weight: 700;
+            margin-right: 8px;
+        }
+
+        .layer-question {
+            color: #999;
+            font-style: italic;
+            margin-bottom: 4px;
+            font-size: 0.95em;
+        }
+
+        .layer-hint {
+            color: #6d6d8a;
+            font-size: 0.82em;
+            margin-bottom: 14px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .option {
+            position: relative;
+            background: #1a1a2e;
+            border: 2px solid #2a2a3a;
+            border-radius: 8px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .option:hover {
+            border-color: #a78bfa;
+            background: #1e1e35;
+        }
+
+        .option.selected {
+            border-color: #7c3aed;
+            background: linear-gradient(135deg, rgba(124,58,237,0.15), rgba(59,130,246,0.1));
+            box-shadow: 0 0 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .option-name {
+            font-weight: 600;
+            font-size: 0.95em;
+            color: #e0e0e0;
+            margin-bottom: 2px;
+        }
+
+        .option-short {
+            font-size: 0.8em;
+            color: #888;
+        }
+
+        .tooltip-icon {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            background: #2a2a3a;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7em;
+            color: #888;
+            font-weight: 700;
+            cursor: help;
+        }
+
+        .tooltip-icon:hover + .tooltip-box,
+        .tooltip-box:hover {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .tooltip-box {
+            position: absolute;
+            top: calc(100% + 6px);
+            right: 0;
+            width: 260px;
+            background: #222238;
+            border: 1px solid #a78bfa;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 0.82em;
+            color: #ccc;
+            line-height: 1.5;
+            z-index: 100;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: all 0.2s ease;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+        }
+
+        .tooltip-box::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 12px;
+            width: 10px;
+            height: 10px;
+            background: #222238;
+            border-left: 1px solid #a78bfa;
+            border-top: 1px solid #a78bfa;
+            transform: rotate(45deg);
+        }
+
+        .layer-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .layer-randomize {
+            padding: 6px 14px;
+            background: transparent;
+            border: 1px solid #444;
+            border-radius: 6px;
+            color: #888;
+            cursor: pointer;
+            font-size: 0.8em;
+            transition: all 0.2s ease;
+        }
+
+        .layer-randomize:hover {
+            border-color: #60a5fa;
+            color: #60a5fa;
+        }
+
+        .selected-indicator {
+            color: #4ade80;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        /* Results */
+        #results-panel {
+            display: none;
+            background: #12121c;
+            border: 2px solid #7c3aed;
+            border-radius: 16px;
+            padding: 30px;
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        #results-panel h2 {
+            text-align: center;
+            font-size: 1.8em;
+            background: linear-gradient(135deg, #a78bfa, #60a5fa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+        }
+
+        .results-section {
+            margin-bottom: 28px;
+        }
+
+        .results-section h3 {
+            font-size: 1.2em;
+            margin-bottom: 14px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #2a2a3a;
+        }
+
+        .results-section h3.formal-heading { color: #a78bfa; }
+        .results-section h3.simple-heading { color: #60a5fa; }
+
+        .result-paragraph {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 20px 22px;
+            line-height: 1.8;
+            font-size: 0.98em;
+            color: #ccc;
+            border-left: 4px solid #7c3aed;
+        }
+
+        .result-paragraph.simple {
+            border-left-color: #60a5fa;
+        }
+
+        .result-paragraph strong {
+            color: #e0e0e0;
+        }
+
+        .result-paragraph .term {
+            color: #a78bfa;
+            font-weight: 600;
+        }
+
+        .result-paragraph.simple .term {
+            color: #60a5fa;
+        }
+
+        .contradictions {
+            background: linear-gradient(135deg, rgba(248,113,113,0.08), rgba(251,191,36,0.08));
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .contradictions h3 {
+            color: #fbbf24 !important;
+            border-bottom-color: rgba(251, 191, 36, 0.3) !important;
+        }
+
+        .contradiction-item {
+            background: rgba(248, 113, 113, 0.06);
+            border-radius: 8px;
+            padding: 14px;
+            margin-bottom: 10px;
+            border-left: 3px solid #f87171;
+        }
+
+        .contradiction-label {
+            font-weight: 700;
+            color: #fbbf24;
+            margin-bottom: 4px;
+        }
+
+        .contradiction-question {
+            color: #ccc;
+            font-style: italic;
+            font-size: 0.92em;
+            line-height: 1.5;
+        }
+
+        .no-contradictions {
+            text-align: center;
+            color: #4ade80;
+            padding: 10px;
+            font-style: italic;
+        }
+
+        .summary-box {
+            background: linear-gradient(135deg, rgba(124,58,237,0.1), rgba(59,130,246,0.1));
+            border: 1px solid #7c3aed;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .summary-box p {
+            font-size: 1.1em;
+            line-height: 1.7;
+            color: #ccc;
+        }
+
+        .summary-box strong { color: #a78bfa; }
+
+        .copy-btn {
+            display: block;
+            margin: 20px auto 0;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #7c3aed, #3b82f6);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .copy-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(124, 58, 237, 0.4);
+        }
+
+        .copy-notification {
+            text-align: center;
+            color: #4ade80;
+            margin-top: 10px;
+            font-size: 0.9em;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .copy-notification.show { opacity: 1; }
+
+        @media (max-width: 600px) {
+            .options-grid { grid-template-columns: 1fr; }
+            header h1 { font-size: 1.6em; }
+            .controls { flex-direction: column; align-items: stretch; }
+            .layer-header { flex-direction: column; align-items: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚖️ OC Moral Compass Builder</h1>
+            <p>Define your character's morality and philosophy — or let fate decide</p>
+        </header>
+
+        <div class="name-input-wrapper">
+            <label for="char-name">Character Name (optional)</label>
+            <input type="text" id="char-name" placeholder="Your character's name...">
+        </div>
+
+        <div class="controls">
+            <button class="btn btn-primary" onclick="randomizeAll()">🎲 Randomize All</button>
+            <button class="btn btn-secondary" onclick="generateResults()">📜 Generate Results</button>
+            <button class="btn btn-danger" onclick="clearAll()">✕ Clear All</button>
+        </div>
+
+        <div id="layers-container"></div>
+
+        <div id="results-panel">
+            <h2 id="results-title">Your Character's Moral Profile</h2>
+            <div id="summary-container"></div>
+            <div id="formal-results"></div>
+            <div id="simple-results"></div>
+            <div id="contradictions-container"></div>
+            <button class="copy-btn" onclick="copyResults()">📋 Copy to Clipboard</button>
+            <p class="copy-notification" id="copy-notif">Copied to clipboard!</p>
+        </div>
+    </div>
+
+    <script>
+        const layersData = [
+            {
+                id: "foundation",
+                title: "Core Moral Foundation",
+                question: "What does your character believe is the BASIS of right and wrong?",
+                options: [
+                    { name: "Consequentialism", short: "Outcomes matter most", tooltip: "Think 'the ends justify the means.' If saving 100 people means lying, the lie was moral because the RESULT was good.", formal: "Consequentialist ethics — moral value is determined by the outcomes and consequences of actions rather than intentions or adherence to rules.", simple: "They judge right and wrong based on results. If something leads to a good outcome, it was the right call — even if the method was ugly." },
+                    { name: "Deontology", short: "Rules and duties matter most", tooltip: "Some things are just WRONG no matter what. Lying is wrong even if it saves someone. They follow moral rules regardless of outcome.", formal: "Deontological ethics — actions are inherently right or wrong based on rules, duties, or obligations independent of their consequences.", simple: "They believe some things are just wrong, period. Doesn't matter if breaking the rule would help — the rule exists for a reason." },
+                    { name: "Virtue Ethics", short: "Being a good person matters most", tooltip: "It's not about rules or results — it's about WHO YOU ARE. A brave, honest, kind person will naturally make good choices.", formal: "Virtue ethics — morality is rooted in the development of virtuous character traits such as courage, temperance, justice, and wisdom.", simple: "They care about being a genuinely good person. If you have good character — bravery, honesty, kindness — good actions follow naturally." },
+                    { name: "Care Ethics", short: "Relationships and compassion matter most", tooltip: "Morality isn't abstract — it's about real people and real bonds. Taking care of others is what being good means.", formal: "Care ethics — moral action is grounded in interpersonal relationships, empathy, and attending to the needs of those one is responsible for.", simple: "For them, morality is personal. It's about caring for real people they're connected to — not following some abstract philosophy textbook." },
+                    { name: "Egoism", short: "Self-interest drives morality", tooltip: "Looking out for #1 isn't selfish — it's honest. Everyone acts in self-interest anyway, they just admit it.", formal: "Ethical egoism — the morally right action is the one that maximizes benefit to oneself.", simple: "They look out for themselves first and don't pretend otherwise. That doesn't necessarily make them evil — just honest about priorities." },
+                    { name: "Nihilism", short: "Morality is a construct", tooltip: "There is no cosmic right or wrong. Morality is just something humans made up. They see through the illusion.", formal: "Moral nihilism — objective moral truths do not exist. Concepts of right and wrong are human constructions without inherent validity.", simple: "They don't believe in real 'right' or 'wrong.' It's all made up. This might make them free, empty, or dangerous." },
+                    { name: "Divine Command", short: "A higher power defines morality", tooltip: "Right and wrong come from a god, gods, cosmic force, or spiritual truth. Morality isn't a human choice — it was handed down.", formal: "Divine command theory — moral obligations are derived from the commands or will of a deity or transcendent cosmic authority.", simple: "They believe morality comes from something bigger — a god, the universe, fate. Right and wrong aren't opinions, they're divine law." },
+                    { name: "Contractualism", short: "Morality is a social agreement", tooltip: "We all agreed to rules so society works. Morality = the deal we made with each other. Break the deal, you're wrong.", formal: "Contractualist ethics — moral norms are justified by mutual agreement among rational agents cooperating for mutual benefit.", simple: "They think morality is basically a deal. We all agreed to rules so we can live together. Break the deal and you're in the wrong." },
+                    { name: "Natural Law", short: "Morality is built into reality", tooltip: "Right and wrong aren't opinions — they're baked into how the world works. Like gravity, but for ethics.", formal: "Natural law theory — moral principles are inherent in the nature of reality and can be discovered through reason.", simple: "They believe right and wrong are built into how the universe works — like physics but for morality. You don't make the rules, you find them." },
+                    { name: "Hedonism", short: "Pleasure and happiness are the ultimate good", tooltip: "The point of life is to experience joy and avoid suffering. Actions that increase happiness = good.", formal: "Ethical hedonism — pleasure and the absence of suffering are the sole intrinsic goods.", simple: "For them, the whole point is happiness. If it brings joy and avoids suffering, it's good. Simple — though the execution gets complicated." },
+                    { name: "Asceticism", short: "Discipline and denial lead to goodness", tooltip: "Comfort and pleasure are traps. True goodness comes from self-denial, discipline, and enduring hardship.", formal: "Ascetic morality — virtue is cultivated through self-discipline, abstinence from indulgence, and voluntary austerity.", simple: "They believe comfort makes you weak. True goodness comes from discipline, sacrifice, and saying no to easy pleasures." },
+                    { name: "Honor Ethics", short: "Personal code and reputation above all", tooltip: "Your word is your bond. Your name means something. They live and die by a personal code.", formal: "Honor-based ethics — moral worth is tied to adherence to a personal or cultural code of conduct, with reputation and integrity as paramount.", simple: "They live by a code. Their word, their name, their reputation — that's everything. Breaking their own code is worse than death." },
+                    { name: "Existentialism", short: "You must create your own morality", tooltip: "No pre-set answers. No rulebook. YOU have to choose — and own that choice completely.", formal: "Existentialist ethics — individuals bear absolute responsibility for creating their own moral values through authentic choice.", simple: "They believe nobody can tell you what's right. You have to figure it out yourself and own every choice." },
+                    { name: "Pragmatic Morality", short: "Whatever works in practice is moral", tooltip: "They care about what actually WORKS in the real world. If a moral theory doesn't produce results, it's useless.", formal: "Moral pragmatism — ethical principles are evaluated by their practical efficacy and real-world outcomes.", simple: "They don't care about philosophy debates. Does it work? Does it actually help? If your moral theory fails in practice, it's a bad theory." },
+                    { name: "Might Makes Right", short: "Power defines morality", tooltip: "The strong make the rules. Morality is just what the powerful say it is.", formal: "Thrasymachean ethics — justice and morality are constructs defined by those with power to enforce them.", simple: "They believe whoever has the power makes the rules. Morality isn't real — it's just what the strong impose on the weak." },
+                    { name: "Fatalism", short: "Everything is predetermined", tooltip: "Choice is an illusion. Everything that happens was always going to happen. Morality doesn't really matter.", formal: "Moral fatalism — the belief that all events are predetermined renders moral deliberation ultimately meaningless.", simple: "They believe everything is already decided. Free will is an illusion. Why stress about right and wrong when the outcome is set?" }
+                ]
+            },
+            {
+                id: "scope",
+                title: "Moral Scope",
+                question: "WHO does your character's morality apply to?",
+                options: [
+                    { name: "Universalist", short: "Everyone equally", tooltip: "Every person — stranger, enemy, friend — deserves the same moral treatment. No favorites.", formal: "Moral universalism — ethical principles apply equally to all rational beings regardless of identity or relationship.", simple: "They believe everyone deserves equal treatment — strangers, enemies, friends. No special treatment, no one left out." },
+                    { name: "Tribalist", short: "My group first", tooltip: "Your people come first. Crew, clan, party — whatever the group. Outsiders aren't priority.", formal: "Moral tribalism — ethical obligations are strongest toward members of one's identified in-group.", simple: "Their people come first. The crew, the clan, the squad — loyalty to the group trumps abstract fairness." },
+                    { name: "Nationalist", short: "My nation/kingdom/faction", tooltip: "Country, kingdom, organization — the BIG group identity. Morality scales to faction interests.", formal: "Moral nationalism — ethical priority is given to the interests of one's nation, kingdom, or political entity.", simple: "They put their nation or faction above all. What's good for the homeland IS what's good." },
+                    { name: "Individualist", short: "Myself and chosen few", tooltip: "A small circle. Maybe just themselves, maybe a handful of chosen people. Everyone else is background.", formal: "Moral individualism — ethical concern is limited to oneself and a deliberately chosen inner circle.", simple: "They care about themselves and maybe a tiny handful of chosen people. The rest? Not their problem." },
+                    { name: "Cosmicist", short: "All living/sentient beings", tooltip: "Not just people — animals, spirits, aliens, everything that can think or feel. ALL life has moral value.", formal: "Moral cosmicism — ethical consideration extends to all sentient beings across species, realms, or forms of consciousness.", simple: "Their moral circle includes EVERYTHING that can think or feel — animals, spirits, aliens, all of it." },
+                    { name: "Familialist", short: "Blood/found family above all", tooltip: "Family is everything. Blood or chosen, doesn't matter — family comes before any principle or law.", formal: "Familial ethics — moral obligations are primarily rooted in familial bonds, whether biological or chosen.", simple: "Family comes first. Always. They'd burn the world for the people they call family." },
+                    { name: "Classist", short: "Certain social tiers matter more", tooltip: "Not everyone is equal. Nobles over peasants, or workers over elites — some class has priority.", formal: "Moral stratification — ethical consideration is distributed unequally based on social class or caste.", simple: "They believe some people matter more based on social standing. There's a hierarchy." },
+                    { name: "Reciprocal", short: "I care about those who care about me", tooltip: "Morality is a two-way street. Treat me well, I treat you well. Betray me, you're nothing.", formal: "Reciprocal morality — ethical obligations are conditional upon mutual respect and returned consideration.", simple: "Respect is earned, not given. They treat people well if those people treat them well." },
+                    { name: "Meritocratic", short: "Those who earn it deserve consideration", tooltip: "Moral worth is earned through ability, effort, or achievement. The excellent have earned their place.", formal: "Moral meritocracy — ethical consideration is allocated based on demonstrated ability, effort, and achievement.", simple: "They respect people who've earned it through skill or hard work. Lazy people don't get the same treatment." },
+                    { name: "Chosen People", short: "A specific destined/worthy group", tooltip: "Some group is special — blessed, destined, superior. They deserve moral priority because they're MEANT to.", formal: "Electionist morality — a particular group holds special moral status through destiny, divine selection, or inherent superiority.", simple: "They believe a specific group is special — chosen by fate or nature. That group matters most." },
+                    { name: "Speciesist", short: "My race/species takes priority", tooltip: "Their own kind comes first. Their species/race is #1.", formal: "Speciesism — ethical obligations are primarily directed toward members of one's own species or racial group.", simple: "Their own kind comes first. Doesn't mean they hate others, but their species will always be top priority." },
+                    { name: "Expansionist", short: "My scope grows as people prove themselves", tooltip: "Start small but it can GROW. Prove you're worthy and you're in. The moral circle expands.", formal: "Expansionist morality — the scope of ethical consideration begins narrowly but widens as individuals demonstrate trustworthiness.", simple: "They start caring about a small circle, but it grows. Prove yourself and you're in." },
+                    { name: "Isolationist", short: "Only my immediate world matters", tooltip: "If it's not directly in front of them, it doesn't exist morally. Not cruel — just uninterested.", formal: "Moral isolationism — ethical concern is confined to one's immediate sphere of experience.", simple: "If it's not right in front of them, it's not their problem. They don't engage beyond their bubble." }
+                ]
+            },
+            {
+                id: "flexibility",
+                title: "Moral Flexibility",
+                question: "How rigidly does your character stick to their beliefs?",
+                options: [
+                    { name: "Absolutist", short: "Rules are rules, no exceptions", tooltip: "Black and white. The rule is the rule. Even if the whole world burns, they won't cross that line.", formal: "Moral absolutism — ethical rules are inviolable and apply universally without exception.", simple: "They will NOT bend. The rule is the rule, even if following it causes pain." },
+                    { name: "Contextualist", short: "Depends on the situation", tooltip: "Every situation is different. What's right here might be wrong there. No blanket rules.", formal: "Moral contextualism — ethical judgments are situation-dependent, determined by specific circumstances.", simple: "Every situation is different and they know it. They weigh each moment individually." },
+                    { name: "Pragmatist", short: "Whatever works", tooltip: "Ideals are nice but reality is messy. They'll do what needs doing.", formal: "Moral pragmatism — ethical positions are adapted fluidly based on practical needs and effectiveness.", simple: "They do what needs to be done. Practical solutions win over pretty principles." },
+                    { name: "Hypocrite", short: "Has rules but constantly breaks them", tooltip: "They HAVE a moral code. They BELIEVE in it. They just... keep failing to follow it.", formal: "Moral hypocrisy — dissonance between professed ethical standards and actual behavior.", simple: "They genuinely believe in their moral code — they just keep breaking it." },
+                    { name: "Evolving", short: "Morality shifts as they grow", tooltip: "They're not the same person morally that they were a year ago. Experience changes them.", formal: "Moral evolution — ethical positions shift through experience, reflection, and personal growth over time.", simple: "Their morals aren't fixed. They change as they learn and grow as a person." },
+                    { name: "Conditional", short: "Moral until pushed past a breaking point", tooltip: "They have morals. Real ones. But everyone has a limit. Push them far enough and the rules go out the window.", formal: "Conditional morality — ethical principles are maintained under normal circumstances but suspended when thresholds of pressure are exceeded.", simple: "They have real morals — until you push them too far. Everyone has a breaking point." },
+                    { name: "Performative", short: "Acts moral for appearance only", tooltip: "They say the right things in public — but don't believe any of it. It's all performance.", formal: "Performative morality — ethical behavior is enacted strategically for social approval without genuine commitment.", simple: "They ACT moral perfectly but inside? They don't believe a word of it. It's all a show." },
+                    { name: "Selective", short: "Rigid about SOME rules, loose about others", tooltip: "They'll NEVER lie, but stealing is fine. Cherry-picked morality with specific hard lines.", formal: "Selective morality — certain ethical principles are held as inviolable while others are treated with flexibility.", simple: "They have specific rules they'll NEVER break — and others they don't care about at all." },
+                    { name: "Reluctant Compromiser", short: "Hates bending but will when forced", tooltip: "Every compromise hurts. They hate it. But they'll do it because sometimes you HAVE to.", formal: "Reluctant moral compromise — ethical principles are grudgingly suspended under extreme duress.", simple: "They'll compromise if they absolutely must — but they'll hate every second of it." },
+                    { name: "Chaotic", short: "Inconsistent with no real pattern", tooltip: "Even THEY can't predict what they'll do. It's not strategy — it's genuine moral chaos.", formal: "Moral inconsistency — ethical behavior follows no discernible pattern, varying unpredictably.", simple: "Nobody can predict what they'll do — including themselves." },
+                    { name: "Aspirational", short: "Has ideals they keep trying to meet", tooltip: "They KNOW what they should be. They keep falling short. But they NEVER stop trying.", formal: "Aspirational morality — ethical ideals are maintained as guiding goals despite consistent failure to achieve them.", simple: "They know the person they want to be. They keep falling short. But they keep trying — and that's what matters." },
+                    { name: "Convenient", short: "Moral when it's easy, flexible when it's hard", tooltip: "They're a great person... when it costs them nothing. When being moral gets hard, there's suddenly wiggle room.", formal: "Convenient morality — ethical principles are upheld when costless but abandoned when sacrifice is required.", simple: "They're super moral when it's easy. But the moment it costs something? The rules get real flexible." }
+                ]
+            },
+            {
+                id: "justice",
+                title: "Philosophy of Justice",
+                question: "How does your character believe wrongs should be handled?",
+                options: [
+                    { name: "Retributive", short: "Wrongdoers deserve punishment", tooltip: "You do bad, you get punished. The punishment should match the crime. Balance must be restored.", formal: "Retributive justice — wrongdoers deserve proportional punishment as a matter of moral balance.", simple: "If you do something wrong, you get punished. That's fair. The punishment fits the crime." },
+                    { name: "Restorative", short: "Focus on healing harm", tooltip: "Punishment doesn't fix anything. What matters is healing — for the victim, the community, even the offender.", formal: "Restorative justice — the primary goal is repairing harm through reconciliation rather than punishment.", simple: "Punishment doesn't undo the damage. What matters is fixing things — healing the victim, mending the community." },
+                    { name: "Preventative", short: "Stop harm before it happens", tooltip: "The best crime is one that never happens. Focus on stopping problems before they start.", formal: "Preventative justice — moral priority is placed on anticipating and preventing wrongdoing before it occurs.", simple: "Why wait for bad things to happen? Stop them BEFORE they start." },
+                    { name: "Apathetic", short: "Justice isn't my problem", tooltip: "Not my circus, not my monkeys. Justice is someone else's job.", formal: "Moral apathy toward justice — the individual does not consider justice within their sphere of concern.", simple: "They just don't care about justice. Not their problem." },
+                    { name: "Vengeful", short: "Justice is personal payback", tooltip: "Forget courts. Justice is what happens when YOU make them pay. Personal. Satisfying.", formal: "Vindictive justice — wrongdoing is addressed through personal retaliation.", simple: "Justice means making them pay PERSONALLY. No courts, no systems — just payback." },
+                    { name: "Distributive", short: "Justice means fair distribution", tooltip: "Real justice is making sure everyone gets their fair share of resources and opportunities.", formal: "Distributive justice — moral rightness is about equitable allocation of resources and social goods.", simple: "For them, justice means everyone gets their fair share." },
+                    { name: "Karmic", short: "The universe will sort it out", tooltip: "What goes around comes around. The universe will deliver justice eventually. Patience.", formal: "Karmic justice — wrongdoing will be naturally corrected through cosmic or metaphysical mechanisms.", simple: "They believe what goes around comes around. Bad people get what's coming eventually." },
+                    { name: "Revolutionary", short: "The entire system must be torn down", tooltip: "You can't fix a broken machine — you replace it. The whole system is corrupt.", formal: "Revolutionary justice — existing systems are fundamentally unjust and must be entirely dismantled.", simple: "The whole system is rotten. Tear it ALL down and build something better." },
+                    { name: "Reformist", short: "The system can be fixed from within", tooltip: "The system isn't perfect but it's not hopeless. Push for change. Slow progress is progress.", formal: "Reformist justice — existing systems can be improved through gradual, internal change.", simple: "The system has problems, but it's not beyond saving. Fix things piece by piece." },
+                    { name: "Mercy-Driven", short: "Forgiveness over punishment always", tooltip: "Everyone makes mistakes. Mercy is always the answer. Give second chances — even when it's dangerous.", formal: "Mercy-based justice — compassion and forgiveness are prioritized over punishment.", simple: "They always choose forgiveness. Everyone deserves a second chance." },
+                    { name: "Exemplary", short: "Punish to send a message", tooltip: "The punishment isn't just FOR the criminal — it's for everyone watching. Make an example.", formal: "Exemplary justice — punishment serves primarily as a deterrent to others.", simple: "Punishment isn't just about the criminal — it's about the MESSAGE." },
+                    { name: "Transactional", short: "Justice is about debts and repayment", tooltip: "Wrong someone? You owe a debt. Pay it back. Justice is a ledger that must be balanced.", formal: "Transactional justice — wrongdoing creates a debt that must be repaid through compensation.", simple: "They see justice like a balance sheet. You did wrong? Now you owe." },
+                    { name: "Hierarchical", short: "Justice depends on your station", tooltip: "A noble killing a peasant isn't the same as a peasant killing a noble. Rank changes the rules.", formal: "Hierarchical justice — moral standards vary based on social rank.", simple: "Justice isn't equal. Station and rank change the rules." },
+                    { name: "Survivalist", short: "Justice is a luxury", tooltip: "When you're focused on not dying, justice is a nice-to-have. Survival comes first.", formal: "Survivalist justice — in conditions of scarcity, justice is deprioritized in favor of survival.", simple: "Justice is a luxury for people who aren't trying to survive." }
+                ]
+            },
+            {
+                id: "nature",
+                title: "View on Human/Sentient Nature",
+                question: "What does your character believe about people at their core?",
+                options: [
+                    { name: "Optimist", short: "People are inherently good", tooltip: "Deep down, most people want to do the right thing. Cruelty is the exception.", formal: "Moral optimism — sentient beings possess an inherent inclination toward goodness.", simple: "They genuinely believe most people are good at heart." },
+                    { name: "Pessimist", short: "People are inherently selfish", tooltip: "Everyone's looking out for themselves. Altruism is either fake or rare.", formal: "Moral pessimism — sentient beings are fundamentally self-interested, with genuine altruism being rare.", simple: "They think people are selfish at their core. Expect the worst." },
+                    { name: "Neutralist", short: "People are shaped by circumstance", tooltip: "People aren't born good or evil — life makes them. Change the circumstances, change the person.", formal: "Moral neutralism — sentient beings are morally neutral at origin, with character formed by environment.", simple: "People aren't born good or bad — life shapes them." },
+                    { name: "Cynic", short: "People CLAIM to be good but aren't", tooltip: "Everyone pretends to be decent. Scratch the surface and you find selfishness and cowardice.", formal: "Moral cynicism — professed virtue is viewed as performative, masking underlying selfishness.", simple: "They think everyone is faking it. The nice mask always slips." },
+                    { name: "Dualist", short: "Equal capacity for good and evil", tooltip: "Everyone has a light side and a dark side. Which one wins depends on the moment.", formal: "Moral dualism — sentient beings possess equal capacities for virtue and vice.", simple: "They believe everyone has both a good side and an evil side in equal measure." },
+                    { name: "Corruptionist", short: "People start good but the world ruins them", tooltip: "Children are innocent. Life destroys that. Power corrupts, trauma warps.", formal: "Moral corruptionism — sentient beings begin in innocence that is progressively degraded by experience.", simple: "They think people start good but life slowly ruins them. Corruption is inevitable." },
+                    { name: "Redeemer", short: "Even the worst can be saved", tooltip: "Nobody is beyond saving. The worst monster has a spark of good. It might take everything to reach it.", formal: "Moral redemptionism — no individual is beyond the possibility of moral transformation.", simple: "They believe NO ONE is beyond saving. The worst villain still has a spark of good." },
+                    { name: "Elitist", short: "Only some are capable of true goodness", tooltip: "Not everyone has it in them. True virtue is rare. Most people are morally mediocre.", formal: "Moral elitism — genuine virtue is achievable only by a select few.", simple: "They think real goodness is rare. Only a special few have what it takes." },
+                    { name: "Absurdist", short: "Human nature is contradictory and unknowable", tooltip: "People make no sense. They'll die for strangers and murder their friends. A beautiful, terrifying contradiction.", formal: "Moral absurdism — sentient nature is fundamentally paradoxical and resistant to moral categorization.", simple: "They think people are walking contradictions. It doesn't make sense and never will." },
+                    { name: "Predatory", short: "People are animals wearing masks", tooltip: "Civilization is thin veneer. People are hunters, survivors, predators underneath.", formal: "Predatory naturalism — beneath social conditioning, behavior is driven by primal, competitive instincts.", simple: "Strip away the fancy clothes and people are just animals. Civilization is a thin disguise." },
+                    { name: "Romantic", short: "People are beautiful and flawed", tooltip: "People are magnificent BECAUSE they're messy. The flaws and passions make them extraordinary.", formal: "Moral romanticism — the full spectrum of sentient experience, including flaws, is inherently beautiful.", simple: "They find people BEAUTIFUL — not despite the flaws but because of them." },
+                    { name: "Mechanist", short: "People are products of biology", tooltip: "Free will is debatable. People are chemicals and neurons. Morality is just biology's output.", formal: "Moral mechanism — behavior is determined by biological and neurological factors.", simple: "They think people are basically biological machines. Free will? Debatable." },
+                    { name: "Spiritual", short: "There's a soul/essence that defines us", tooltip: "Beyond the body, beyond the brain — there's something MORE. A soul, a spirit.", formal: "Moral spiritualism — a transcendent soul or essence constitutes the true moral identity of a being.", simple: "They believe there's something beyond the body — a soul, a spirit, something deeper." },
+                    { name: "Traumatist", short: "People are defined by their wounds", tooltip: "You are your scars. Understand someone's pain and you understand THEM.", formal: "Moral traumatism — character and moral behavior are primarily shaped by formative experiences of suffering.", simple: "They believe you are your scars. Want to understand someone? Understand their pain." },
+                    { name: "Hopeful Realist", short: "Flawed but capable of growth", tooltip: "People aren't great. But they CAN be. It's not naivety — it's hope with open eyes.", formal: "Hopeful realism — sentient beings are deeply flawed while possessing genuine capacity for moral growth.", simple: "They see people clearly — flawed but capable of growth. It's hope with eyes open." }
+                ]
+            },
+            {
+                id: "authority",
+                title: "Authority Stance",
+                question: "How does your character feel about power and leadership?",
+                options: [
+                    { name: "Authoritarian", short: "Strong leadership is necessary", tooltip: "People need someone in charge. Without authority, everything falls apart.", formal: "Authoritarianism — strong centralized leadership is essential for social order.", simple: "They believe people need a strong leader. Without someone in charge, chaos." },
+                    { name: "Libertarian", short: "Freedom above all", tooltip: "Don't tell me what to do. Personal freedom is the highest value.", formal: "Libertarianism — individual liberty is paramount, with minimal external authority as the ideal.", simple: "Freedom is everything. Don't tell them what to do." },
+                    { name: "Communalist", short: "Collective decision making", tooltip: "No one person should decide for everyone. The group decides together.", formal: "Communalism — governance should be distributed collectively through communal participation.", simple: "Nobody should have all the power. Decisions should be made together." },
+                    { name: "Anarchist", short: "Systems of power are inherently corrupt", tooltip: "All power structures are corrupt. True freedom means dismantling ALL systems of control.", formal: "Anarchism — all hierarchical power structures are inherently oppressive and must be abolished.", simple: "They believe ALL power structures are corrupt. Tear it all down." },
+                    { name: "Theocratic", short: "Divine authority should rule", tooltip: "God/gods/the divine should guide leadership. Sacred over secular authority.", formal: "Theocracy — legitimate governance derives from divine authority.", simple: "They believe leadership should come from divine authority, not flawed mortals." },
+                    { name: "Meritocratic", short: "The most capable should lead", tooltip: "The smartest, most qualified person should be in charge. Not richest or strongest — the BEST.", formal: "Meritocracy — leadership should be allocated based on demonstrated competence.", simple: "The best person for the job should lead. The most capable and qualified." },
+                    { name: "Feudalist", short: "Loyalty-based hierarchy is natural", tooltip: "Lords and vassals. Loyalty up and protection down. A chain of mutual obligation.", formal: "Feudalism — social order through hierarchical bonds of personal loyalty and mutual obligations.", simple: "They believe in a loyalty chain. You serve your leader, your leader protects you." },
+                    { name: "Reluctant Leader", short: "Doesn't want power but accepts it", tooltip: "They don't WANT to be in charge. But someone has to.", formal: "Reluctant authority — leadership is accepted as a burdensome duty rather than a desired position.", simple: "They never wanted to lead. But someone had to step up." },
+                    { name: "Puppet Master", short: "Control from the shadows", tooltip: "Let someone else sit on the throne. Real power is behind the curtain.", formal: "Shadow governance — power is exercised through covert influence rather than visible authority.", simple: "They don't want the throne — they want to control whoever sits on it." },
+                    { name: "Anti-Authority", short: "Opposes whoever is in charge on principle", tooltip: "Doesn't matter who — they're against them. Instinctive defiance of authority.", formal: "Anti-authoritarianism — reflexive opposition to established authority regardless of its nature.", simple: "They're against whoever is in charge, on principle." },
+                    { name: "Institutionalist", short: "Trusts systems and traditions", tooltip: "The system exists for a reason. Traditions carry wisdom. Work within the framework.", formal: "Institutionalism — established systems and traditions are trusted as repositories of accumulated wisdom.", simple: "They trust the system. It's been around this long for a reason." },
+                    { name: "Warlord", short: "Power through strength and fear", tooltip: "Might IS authority. The strongest rules because they CAN.", formal: "Warlordism — authority derives from martial strength and capacity to enforce dominion.", simple: "The strongest person rules. Authority comes from power and fear." },
+                    { name: "Shepherd", short: "The wise must guide the ignorant", tooltip: "Most people don't know what's best for them. The wise must guide everyone else.", formal: "Paternalistic authority — the knowledgeable bear obligation to guide those less capable.", simple: "Most people don't know what's good for them. Someone wiser needs to guide them." },
+                    { name: "Egalitarian", short: "No one should have power over another", tooltip: "True equality. No one above, no one below. Power over others is inherently wrong.", formal: "Egalitarianism — all individuals possess equal moral and political standing.", simple: "Nobody should have power over anyone else. True equality." },
+                    { name: "Survivalist", short: "Whoever keeps us alive gets to lead", tooltip: "Whoever is keeping the group alive RIGHT NOW has earned the right to lead.", formal: "Survivalist authority — leadership legitimacy derives solely from demonstrated capacity to ensure survival.", simple: "Whoever is keeping everyone alive gets to be in charge." },
+                    { name: "Consensualist", short: "Nothing without everyone's agreement", tooltip: "EVERYONE must agree. Not majority rules — full consensus. Slow but nobody gets overruled.", formal: "Consensualism — legitimate action requires explicit agreement of all affected parties.", simple: "Every single person needs to agree before anything happens." }
+                ]
+            },
+            {
+                id: "conflict",
+                title: "Conflict Resolution",
+                question: "How does your character handle conflict?",
+                options: [
+                    { name: "Diplomatic", short: "Talk first always", tooltip: "Words before swords. Every conflict can be resolved through dialogue. Violence is failure.", formal: "Diplomatic resolution — conflict is addressed through negotiation and dialogue.", simple: "They always try to talk it out first. Violence means diplomacy failed." },
+                    { name: "Militant", short: "Force is sometimes the best answer", tooltip: "Some problems can't be talked away. Force isn't FIRST resort, but it's on the table.", formal: "Militant resolution — physical force is a legitimate tool for conflicts that can't be resolved otherwise.", simple: "Sometimes talking doesn't work. When it doesn't, they're ready to fight." },
+                    { name: "Avoidant", short: "Stay out of it", tooltip: "Not my fight. Walk away. The only winning move is not to play.", formal: "Conflict avoidance — deliberate disengagement from disputes for self-preservation.", simple: "They avoid conflict entirely. The best fight is the one you never have." },
+                    { name: "Manipulative", short: "Control from behind the scenes", tooltip: "Why fight when you can make others fight for you? Pull strings, redirect.", formal: "Manipulative resolution — conflicts are managed through indirect influence and strategic manipulation.", simple: "They pull strings, plant ideas, and make other people solve the problem." },
+                    { name: "Sacrificial", short: "Absorb the cost yourself", tooltip: "Take the hit. If someone has to suffer to end this, it'll be them.", formal: "Sacrificial resolution — the individual voluntarily assumes personal cost to resolve conflict.", simple: "They'll take the hit so no one else has to." },
+                    { name: "Deceptive", short: "Lie your way through it", tooltip: "A well-placed lie solves more problems than a sword.", formal: "Deceptive resolution — conflicts are resolved through strategic dishonesty and misdirection.", simple: "A good lie can end a fight before it starts." },
+                    { name: "Intimidating", short: "Make them too afraid to continue", tooltip: "You don't have to fight if the other side is terrified of you.", formal: "Intimidation-based resolution — conflict is neutralized through displays of power or psychological dominance.", simple: "They don't always need to fight — just make the other side too scared to keep going." },
+                    { name: "Empathic", short: "Understand their side and find common ground", tooltip: "What do THEY need? Understand the other side and find where you both agree.", formal: "Empathic resolution — conflicts are addressed by genuinely understanding opposing perspectives and finding shared interests.", simple: "They try to genuinely understand why the other side is upset. Build on common ground." },
+                    { name: "Competitive", short: "Turn it into a contest with clear winners", tooltip: "Structure it, compete, may the best side win. Clear winners, clear losers.", formal: "Competitive resolution — conflicts are channeled into structured contests with defined outcomes.", simple: "They turn conflicts into competitions. Someone wins, someone loses. Done." },
+                    { name: "Submissive", short: "Give in to keep the peace", tooltip: "They'll back down. Peace is worth more than winning.", formal: "Submissive resolution — conflict is resolved through capitulation, prioritizing peace over one's position.", simple: "They'll give in to end the fight. They'd rather lose than keep fighting." },
+                    { name: "Escalatory", short: "Push harder until someone breaks", tooltip: "Someone blinked? Push harder. Escalation is a pressure strategy.", formal: "Escalatory resolution — conflict is addressed by progressively increasing pressure until the opponent capitulates.", simple: "They push harder and harder until someone can't take any more and breaks." },
+                    { name: "Mediator", short: "Help OTHERS resolve their conflicts", tooltip: "They don't pick sides — they help both sides find a solution. The neutral party.", formal: "Mediation — positioning as a neutral third party facilitating resolution between conflicting parties.", simple: "They don't pick sides — they help BOTH sides work it out." },
+                    { name: "Strategic Retreat", short: "Lose the battle, win the war", tooltip: "Fall back now. Come back stronger. Losing today doesn't matter if you win tomorrow.", formal: "Strategic withdrawal — short-term concession as a tactic for long-term strategic advantage.", simple: "They'll lose today to win tomorrow. It's not running — it's strategy." },
+                    { name: "Transactional", short: "Everyone has a price", tooltip: "Money. Favors. Promises. Find their price, pay it, conflict over.", formal: "Transactional resolution — conflicts are resolved through exchange of value satisfying both parties.", simple: "Everything has a price. Find it, pay it, conflict over." },
+                    { name: "Martyrdom", short: "Suffer publicly to make a point", tooltip: "Let them hurt you. Let everyone see. Your suffering becomes a statement.", formal: "Martyrdom resolution — publicly enduring suffering to generate moral authority and shift sympathy.", simple: "They let themselves suffer publicly to make a point. Pain becomes a message." },
+                    { name: "Creative", short: "Find a third option nobody considered", tooltip: "Options A and B both suck? Make Option C. Think outside the box.", formal: "Creative resolution — conflicts are addressed through lateral thinking and novel approaches.", simple: "When the obvious choices suck, they make up a new one nobody considered." },
+                    { name: "Delegator", short: "Let someone else handle it", tooltip: "This seems like a someone-else problem. Hand it off.", formal: "Delegative resolution — conflict management is transferred to others deemed more capable.", simple: "They hand the problem to someone else." },
+                    { name: "Ritualistic", short: "Resolve through custom or ceremony", tooltip: "Trial by combat. A formal duel. An oath-bound ceremony. There's a PROPER way.", formal: "Ritualistic resolution — conflicts are channeled through established cultural or ceremonial mechanisms.", simple: "There's a PROPER way to handle disputes — a duel, a trial, a ceremony." }
+                ]
+            }
+        ];
+
+        const contradictions = [
+            { conditions: [["foundation", "Consequentialism"], ["flexibility", "Absolutist"]], label: "Consequentialist + Absolutist", question: "When the best outcome requires breaking your absolute rule — which wins? This is a character constantly at war with themselves." },
+            { conditions: [["scope", "Universalist"], ["justice", "Vengeful"]], label: "Universalist + Vengeful", question: "You believe everyone deserves equal moral treatment... but you make justice PERSONAL? How do you treat someone equally when you're out for blood?" },
+            { conditions: [["foundation", "Nihilism"], ["foundation", "Honor Ethics"]], label: "Nihilist + Honor Ethics", question: "Nothing matters... except your code? They don't believe in morality but built one anyway. Why?" },
+            { conditions: [["nature", "Optimist"], ["authority", "Authoritarian"]], label: "Optimist + Authoritarian", question: "If people are inherently good, why do they need a strong leader controlling them? Do you trust people or not?" },
+            { conditions: [["foundation", "Care Ethics"], ["conflict", "Escalatory"]], label: "Care Ethics + Escalatory", question: "You care deeply about relationships... but you push harder until someone breaks? That's a terrifying combination." },
+            { conditions: [["nature", "Redeemer"], ["justice", "Retributive"]], label: "Redeemer + Retributive", question: "You believe anyone can be saved... but wrongdoers deserve punishment? When does punishment end and redemption begin?" },
+            { conditions: [["foundation", "Egoism"], ["conflict", "Sacrificial"]], label: "Egoist + Sacrificial", question: "Self-interest drives your morality... but you resolve conflict by absorbing the cost? Is the sacrifice itself somehow selfish?" },
+            { conditions: [["authority", "Anarchist"], ["justice", "Exemplary"]], label: "Anarchist + Exemplary", question: "You want to tear down all power structures... but punish to send a message? Who enforces those examples without a system?" },
+            { conditions: [["foundation", "Fatalism"], ["conflict", "Diplomatic"]], label: "Fatalist + Diplomatic", question: "If everything is predetermined, why bother negotiating? Do they talk because they believe it helps, or because they were always going to?" },
+            { conditions: [["nature", "Pessimist"], ["justice", "Mercy-Driven"]], label: "Pessimist + Mercy-Driven", question: "You think people are inherently selfish... but always choose forgiveness? That's either profound grace or a recipe for getting hurt." },
+            { conditions: [["scope", "Individualist"], ["authority", "Communalist"]], label: "Individualist + Communalist", question: "You only care about yourself and a few chosen people... but believe in collective decisions? Do you participate in the community you don't care about?" },
+            { conditions: [["foundation", "Deontology"], ["flexibility", "Pragmatist"]], label: "Deontologist + Pragmatist", question: "Rules matter most... but you'll do whatever works? Which is it when the practical solution requires breaking the rule?" },
+            { conditions: [["nature", "Cynic"], ["foundation", "Care Ethics"]], label: "Cynic + Care Ethics", question: "You think everyone is faking goodness... but your morality is built on genuine compassion? Do you care about people you don't believe in?" },
+            { conditions: [["authority", "Libertarian"], ["justice", "Preventative"]], label: "Libertarian + Preventative", question: "Freedom above all... but you want to stop crimes before they happen? Prevention often means restricting freedom." },
+            { conditions: [["foundation", "Divine Command"], ["authority", "Anarchist"]], label: "Divine Command + Anarchist", question: "Morality comes from a higher power... but all authority is corrupt? Does divine authority get a pass?" },
+            { conditions: [["scope", "Cosmicist"], ["justice", "Apathetic"]], label: "Cosmicist + Apathetic", question: "You care about ALL sentient life... but justice isn't your problem? You care about everyone but won't act when they're wronged?" },
+            { conditions: [["flexibility", "Absolutist"], ["conflict", "Deceptive"]], label: "Absolutist + Deceptive", question: "Rules are rules with no exceptions... but you lie to resolve conflict? Is deception excluded from your moral absolutes?" },
+            { conditions: [["foundation", "Hedonism"], ["foundation", "Asceticism"]], label: "Hedonist + Ascetic", question: "Pleasure is the goal AND denial is the path? Unless they cycle between indulgence and punishment — a deeply tortured character." },
+            { conditions: [["nature", "Mechanist"], ["foundation", "Existentialism"]], label: "Mechanist + Existentialist", question: "People are biological machines with no free will... but you must create your own meaning? How do you choose if choice is an illusion?" },
+            { conditions: [["scope", "Familialist"], ["flexibility", "Performative"]], label: "Familialist + Performative", question: "Family above all... but your morality is just an act? Do you genuinely love your family, or is even THAT performance?" },
+            { conditions: [["authority", "Egalitarian"], ["scope", "Classist"]], label: "Egalitarian + Classist", question: "No one should have power over another... but certain classes matter more? Political equality but moral hierarchy?" },
+            { conditions: [["justice", "Revolutionary"], ["flexibility", "Convenient"]], label: "Revolutionary + Convenient", question: "The system must burn... but only when it's easy? An armchair revolutionary who won't sacrifice comfort." },
+            { conditions: [["nature", "Corruptionist"], ["authority", "Institutionalist"]], label: "Corruptionist + Institutionalist", question: "The world corrupts everyone... but you trust established systems? Aren't those systems doing the corrupting?" },
+            { conditions: [["foundation", "Might Makes Right"], ["conflict", "Submissive"]], label: "Might Makes Right + Submissive", question: "Power defines morality... but you give in to keep peace? Do you believe the strong SHOULD rule but accept you're not the strong one?" },
+            { conditions: [["scope", "Reciprocal"], ["justice", "Mercy-Driven"]], label: "Reciprocal + Mercy-Driven", question: "You care about those who care about you... but always choose forgiveness? When someone betrays you, does mercy override the broken deal?" },
+            { conditions: [["foundation", "Contractualism"], ["flexibility", "Chaotic"]], label: "Contractualist + Chaotic", question: "Morality is a social agreement... but your behavior is unpredictable? You believe in the deal but can't hold up your end?" },
+            { conditions: [["authority", "Libertarian"], ["authority", "Authoritarian"]], label: "Libertarian + Authoritarian", question: "Freedom above all... but strong leadership is necessary? Do they want freedom for themselves and control for others? Or do they believe a strong leader PROTECTS freedom?" },
+            { conditions: [["flexibility", "Pragmatist"], ["flexibility", "Aspirational"]], label: "Pragmatist + Aspirational", question: "They do whatever works... but keep reaching for ideals they haven't met? The pragmatism is survival, the aspiration is the dream. Which one wins on a bad day?" },
+            { conditions: [["authority", "Egalitarian"], ["authority", "Libertarian"]], label: "Egalitarian + Libertarian", question: "True equality AND total freedom? Sometimes enforcing equality requires limiting freedom. Sometimes freedom creates inequality. Where's the balance?" },
+            { conditions: [["flexibility", "Contextualist"], ["flexibility", "Aspirational"]], label: "Contextualist + Aspirational", question: "Every situation is different... but they keep reaching for consistent ideals? The context keeps forcing them to bend the very principles they aspire to." },
+            { conditions: [["nature", "Optimist"], ["nature", "Cynic"]], label: "Optimist + Cynic", question: "People are inherently good... but also faking it? Do they believe in humanity's POTENTIAL while distrusting its current performance?" },
+            { conditions: [["justice", "Retributive"], ["justice", "Mercy-Driven"]], label: "Retributive + Mercy-Driven", question: "Wrongdoers deserve punishment... but forgiveness is always the answer? This character is torn every single time. Which instinct wins?" },
+            { conditions: [["justice", "Vengeful"], ["justice", "Restorative"]], label: "Vengeful + Restorative", question: "They want personal payback... but also want to heal the harm? Maybe the vengeance IS how they process before they can heal." },
+            { conditions: [["conflict", "Diplomatic"], ["conflict", "Escalatory"]], label: "Diplomatic + Escalatory", question: "Talk first... but also push harder until someone breaks? Do they start with words and switch to pressure when diplomacy fails?" },
+            { conditions: [["conflict", "Empathic"], ["conflict", "Manipulative"]], label: "Empathic + Manipulative", question: "They genuinely understand people... and use that understanding to control them? Empathy as a weapon is terrifying." }
+        ];
+
+        let selections = {};
+
+        function buildLayers() {
+            const container = document.getElementById('layers-container');
+            container.innerHTML = '';
+            layersData.forEach((layer, index) => {
+                const layerEl = document.createElement('div');
+                layerEl.className = 'layer';
+                layerEl.id = `layer-${layer.id}`;
+                let optionsHTML = '';
+                layer.options.forEach(opt => {
+                    optionsHTML += `
+                        <div class="option" data-layer="${layer.id}" data-name="${opt.name}" onclick="toggleOption(this, '${layer.id}', '${opt.name}')">
+                            <div class="tooltip-icon">?</div>
+                            <div class="tooltip-box">${opt.tooltip}</div>
+                            <div class="option-name">${opt.name}</div>
+                            <div class="option-short">${opt.short}</div>
+                        </div>
+                    `;
+                });
+                layerEl.innerHTML = `
+                    <div class="layer-header">
+                        <h2><span class="layer-number">${index + 1}</span>${layer.title}</h2>
+                        <div class="layer-controls">
+                            <span class="selected-indicator" id="indicator-${layer.id}"></span>
+                            <button class="layer-randomize" onclick="randomizeLayer('${layer.id}')">🎲 Random</button>
+                        </div>
+                    </div>
+                    <p class="layer-question">${layer.question}</p>
+                    <p class="layer-hint">Select one or more — complex characters can have multiple traits</p>
+                    <div class="options-grid">${optionsHTML}</div>
+                `;
+                container.appendChild(layerEl);
+            });
+        }
+
+        function toggleOption(el, layerId, name) {
+            if (!selections[layerId]) selections[layerId] = [];
+            if (el.classList.contains('selected')) {
+                el.classList.remove('selected');
+                selections[layerId] = selections[layerId].filter(n => n !== name);
+            } else {
+                el.classList.add('selected');
+                selections[layerId].push(name);
+            }
+            updateIndicator(layerId);
+        }
+
+        function updateIndicator(layerId) {
+            const indicator = document.getElementById(`indicator-${layerId}`);
+            if (selections[layerId] && selections[layerId].length > 0) {
+                indicator.textContent = `✓ ${selections[layerId].join(' + ')}`;
+            } else {
+                indicator.textContent = '';
+            }
+        }
+
+        function randomizeLayer(layerId) {
+            const layer = layersData.find(l => l.id === layerId);
+            const count = Math.random() < 0.35 ? 2 : 1;
+            const shuffled = [...layer.options].sort(() => Math.random() - 0.5);
+            const picked = shuffled.slice(0, count).map(o => o.name);
+            selections[layerId] = picked;
+            const layerOptions = document.querySelectorAll(`.option[data-layer="${layerId}"]`);
+            layerOptions.forEach(opt => {
+                opt.classList.remove('selected');
+                if (picked.includes(opt.dataset.name)) {
+                    opt.classList.add('selected');
+                }
+            });
+            updateIndicator(layerId);
+        }
+
+        function randomizeAll() {
+            layersData.forEach(layer => randomizeLayer(layer.id));
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function clearAll() {
+            selections = {};
+            document.querySelectorAll('.option').forEach(opt => opt.classList.remove('selected'));
+            layersData.forEach(layer => {
+                document.getElementById(`indicator-${layer.id}`).textContent = '';
+            });
+            document.getElementById('results-panel').style.display = 'none';
+        }
+
+        function getOptionData(layerId, name) {
+            const layer = layersData.find(l => l.id === layerId);
+            return layer.options.find(o => o.name === name);
+        }
+
+        function getName() {
+            const val = document.getElementById('char-name').value.trim();
+            return val || "This character";
+        }
+
+        function getThey() {
+            const val = document.getElementById('char-name').value.trim();
+            return val || "they";
+        }
+
+        function buildFormalParagraph() {
+            const n = getName();
+            let parts = [];
+
+            // Foundation
+            const founds = (selections.foundation || []).map(s => getOptionData('foundation', s));
+            if (founds.length === 1) {
+                parts.push(`${n}'s moral framework is rooted in <span class="term">${founds[0].name.toLowerCase()}</span> — ${founds[0].formal.split('—')[1]?.trim() || founds[0].formal}`);
+            } else if (founds.length > 1) {
+                const names = founds.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                const descs = founds.map(f => f.formal.split('—')[1]?.trim() || f.formal);
+                parts.push(`${n}'s moral framework draws from multiple foundations: ${names.join(' and ')}. This means ${descs.join(', while simultaneously holding that ')}`);
+            }
+
+            // Scope
+            const scopes = (selections.scope || []).map(s => getOptionData('scope', s));
+            if (scopes.length === 1) {
+                parts.push(`Their moral scope is <span class="term">${scopes[0].name.toLowerCase()}</span> — ${scopes[0].formal.split('—')[1]?.trim() || scopes[0].formal}`);
+            } else if (scopes.length > 1) {
+                const names = scopes.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                parts.push(`Their moral scope operates on multiple levels: ${names.join(' and ')}. ${scopes.map(s => s.formal.split('—')[1]?.trim() || s.formal).join('. Additionally, ')}`);
+            }
+
+            // Flexibility
+            const flexes = (selections.flexibility || []).map(s => getOptionData('flexibility', s));
+            if (flexes.length === 1) {
+                parts.push(`In terms of moral rigidity, they are best characterized as <span class="term">${flexes[0].name.toLowerCase()}</span> — ${flexes[0].formal.split('—')[1]?.trim() || flexes[0].formal}`);
+            } else if (flexes.length > 1) {
+                const names = flexes.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                parts.push(`Their moral flexibility is complex, exhibiting traits of both ${names.join(' and ')}. ${flexes.map(f => f.formal.split('—')[1]?.trim() || f.formal).join('. Simultaneously, ')}`);
+            }
+
+            // Justice
+            const justs = (selections.justice || []).map(s => getOptionData('justice', s));
+            if (justs.length === 1) {
+                parts.push(`Their philosophy of justice is <span class="term">${justs[0].name.toLowerCase()}</span> — ${justs[0].formal.split('—')[1]?.trim() || justs[0].formal}`);
+            } else if (justs.length > 1) {
+                const names = justs.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                parts.push(`Their approach to justice blends ${names.join(' and ')} perspectives. ${justs.map(j => j.formal.split('—')[1]?.trim() || j.formal).join('. They also believe that ')}`);
+            }
+
+            // Nature
+            const natures = (selections.nature || []).map(s => getOptionData('nature', s));
+            if (natures.length === 1) {
+                parts.push(`Regarding sentient nature, they hold a <span class="term">${natures[0].name.toLowerCase()}</span> view — ${natures[0].formal.split('—')[1]?.trim() || natures[0].formal}`);
+            } else if (natures.length > 1) {
+                const names = natures.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                parts.push(`Their view of sentient nature is layered, combining ${names.join(' and ')} perspectives. ${natures.map(n2 => n2.formal.split('—')[1]?.trim() || n2.formal).join('. Yet they also believe ')}`);
+            }
+
+            // Authority
+            const auths = (selections.authority || []).map(s => getOptionData('authority', s));
+            if (auths.length === 1) {
+                parts.push(`On questions of authority, they align with <span class="term">${auths[0].name.toLowerCase()}</span> principles — ${auths[0].formal.split('—')[1]?.trim() || auths[0].formal}`);
+            } else if (auths.length > 1) {
+                const names = auths.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                parts.push(`Their stance on authority synthesizes ${names.join(' and ')} positions. ${auths.map(a => a.formal.split('—')[1]?.trim() || a.formal).join('. At the same time, ')}`);
+            }
+
+            // Conflict
+            const confs = (selections.conflict || []).map(s => getOptionData('conflict', s));
+            if (confs.length === 1) {
+                parts.push(`When facing conflict, their primary mode is <span class="term">${confs[0].name.toLowerCase()}</span> — ${confs[0].formal.split('—')[1]?.trim() || confs[0].formal}`);
+            } else if (confs.length > 1) {
+                const names = confs.map(f => `<span class="term">${f.name.toLowerCase()}</span>`);
+                parts.push(`Their conflict resolution style draws from multiple approaches: ${names.join(' and ')}. ${confs.map(c => c.formal.split('—')[1]?.trim() || c.formal).join('. They may also employ a strategy where ')}`);
+            }
+
+            return parts.join('. ') + '.';
+        }
+
+        function buildSimpleParagraph() {
+            const n = getName();
+            const t = getThey();
+            let parts = [];
+
+            const founds = (selections.foundation || []).map(s => getOptionData('foundation', s));
+            if (founds.length === 1) {
+                parts.push(`At their core, ${n} decides what's right and wrong based on <span class="term">${founds[0].name.toLowerCase()}</span>. ${founds[0].simple}`);
+            } else if (founds.length > 1) {
+                parts.push(`${n}'s sense of right and wrong is complicated. They pull from multiple philosophies: ${founds.map(f => `<span class="term">${f.name.toLowerCase()}</span>`).join(' and ')}. ${founds.map(f => f.simple).join(' But at the same time — ')}`);
+            }
+
+            const scopes = (selections.scope || []).map(s => getOptionData('scope', s));
+            if (scopes.length === 1) {
+                parts.push(`When it comes to who they actually care about? They're <span class="term">${scopes[0].name.toLowerCase()}</span>. ${scopes[0].simple}`);
+            } else if (scopes.length > 1) {
+                parts.push(`Who do they actually extend their morality to? It's layered. They're ${scopes.map(s => `<span class="term">${s.name.toLowerCase()}</span>`).join(' and ')} at the same time. ${scopes.map(s => s.simple).join(' And yet — ')}`);
+            }
+
+            const flexes = (selections.flexibility || []).map(s => getOptionData('flexibility', s));
+            if (flexes.length === 1) {
+                parts.push(`How tightly do they hold those beliefs? They're <span class="term">${flexes[0].name.toLowerCase()}</span>. ${flexes[0].simple}`);
+            } else if (flexes.length > 1) {
+                parts.push(`How rigid are they? It's not simple. They're ${flexes.map(f => `<span class="term">${f.name.toLowerCase()}</span>`).join(' and ')} all at once. ${flexes.map(f => f.simple).join(' But here\'s the thing — ')}`);
+            }
+
+            const justs = (selections.justice || []).map(s => getOptionData('justice', s));
+            if (justs.length === 1) {
+                parts.push(`When someone does wrong, their instinct is <span class="term">${justs[0].name.toLowerCase()}</span>. ${justs[0].simple}`);
+            } else if (justs.length > 1) {
+                parts.push(`Justice is where things get really interesting. They believe in ${justs.map(j => `<span class="term">${j.name.toLowerCase()}</span>`).join(' and ')} approaches simultaneously. ${justs.map(j => j.simple).join(' And yet they also feel that — ')}`);
+            }
+
+            const natures = (selections.nature || []).map(s => getOptionData('nature', s));
+            if (natures.length === 1) {
+                parts.push(`What do they think about people deep down? They're a <span class="term">${natures[0].name.toLowerCase()}</span>. ${natures[0].simple}`);
+            } else if (natures.length > 1) {
+                parts.push(`Their view of people is complex — they're ${natures.map(n2 => `<span class="term">${n2.name.toLowerCase()}</span>`).join(' and ')} simultaneously. ${natures.map(n2 => n2.simple).join(' But at the same time — ')}`);
+            }
+
+            const auths = (selections.authority || []).map(s => getOptionData('authority', s));
+            if (auths.length === 1) {
+                parts.push(`On power and leadership, they lean <span class="term">${auths[0].name.toLowerCase()}</span>. ${auths[0].simple}`);
+            } else if (auths.length > 1) {
+                parts.push(`Their feelings about power are nuanced — they're ${auths.map(a => `<span class="term">${a.name.toLowerCase()}</span>`).join(' and ')} at the same time. ${auths.map(a => a.simple).join(' But they also believe — ')}`);
+            }
+
+            const confs = (selections.conflict || []).map(s => getOptionData('conflict', s));
+            if (confs.length === 1) {
+                parts.push(`When conflict hits, they go <span class="term">${confs[0].name.toLowerCase()}</span>. ${confs[0].simple}`);
+            } else if (confs.length > 1) {
+                parts.push(`In a conflict, they don't have just one move. They draw from ${confs.map(c => `<span class="term">${c.name.toLowerCase()}</span>`).join(' and ')} approaches. ${confs.map(c => c.simple).join(' And sometimes — ')}`);
+            }
+
+            return parts.join('<br><br>');
+        }
+
+        function generateResults() {
+            const missingLayers = layersData.filter(l => !selections[l.id] || selections[l.id].length === 0);
+            if (missingLayers.length > 0) {
+                alert(`Please select at least one option for: ${missingLayers.map(l => l.title).join(', ')}`);
+                return;
+            }
+
+            const panel = document.getElementById('results-panel');
+            panel.style.display = 'block';
+
+            const charName = document.getElementById('char-name').value.trim();
+            document.getElementById('results-title').textContent = charName ? `${charName}'s Moral Profile` : "Your Character's Moral Profile";
+
+            // Summary tags
+            let allSelections = [];
+            layersData.forEach(layer => {
+                (selections[layer.id] || []).forEach(s => allSelections.push(`<strong>${s}</strong>`));
+            });
+            document.getElementById('summary-container').innerHTML = `
+                <div class="summary-box">
+                    <p>${allSelections.join(' · ')}</p>
+                </div>
+            `;
+
+            // Formal paragraph
+            document.getElementById('formal-results').innerHTML = `
+                <div class="results-section">
+                    <h3 class="formal-heading">📚 Proper Terminology</h3>
+                    <div class="result-paragraph">${buildFormalParagraph()}</div>
+                </div>
+            `;
+
+            // Simple paragraph
+            document.getElementById('simple-results').innerHTML = `
+                <div class="results-section">
+                    <h3 class="simple-heading">💬 Simplified Explanation</h3>
+                    <div class="result-paragraph simple">${buildSimpleParagraph()}</div>
+                </div>
+            `;
+
+            // Contradictions
+            let foundContradictions = [];
+            contradictions.forEach(c => {
+                let allMatch = true;
+                for (const [layerId, value] of c.conditions) {
+                    if (!selections[layerId] || !selections[layerId].includes(value)) {
+                        allMatch = false;
+                        break;
+                    }
+                }
+                if (allMatch) foundContradictions.push(c);
+            });
+
+            let contradictionsHTML = `<div class="results-section contradictions"><h3>⚡ Internal Contradictions</h3>`;
+            if (foundContradictions.length > 0) {
+                foundContradictions.forEach(c => {
+                    contradictionsHTML += `
+                        <div class="contradiction-item">
+                            <div class="contradiction-label">${c.label}</div>
+                            <div class="contradiction-question">${c.question}</div>
+                        </div>
+                    `;
+                });
+            } else {
+                contradictionsHTML += `<p class="no-contradictions">✨ No major contradictions detected — your character's philosophy is internally consistent! (Or the contradictions are subtle enough to explore on your own.)</p>`;
+            }
+            contradictionsHTML += `</div>`;
+            document.getElementById('contradictions-container').innerHTML = contradictionsHTML;
+
+            panel.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function copyResults() {
+            const charName = document.getElementById('char-name').value.trim() || "Character";
+
+            let text = `=== ${charName.toUpperCase()}'S MORAL COMPASS ===\n\n`;
+
+            // Tags
+            let allTags = [];
+            layersData.forEach(layer => {
+                (selections[layer.id] || []).forEach(s => allTags.push(s));
+            });
+            text += `TRAITS: ${allTags.join(' · ')}\n\n`;
+
+            // Formal
+            text += `--- PROPER TERMINOLOGY ---\n\n`;
+            const formalDiv = document.createElement('div');
+            formalDiv.innerHTML = buildFormalParagraph();
+            text += formalDiv.textContent.replace(/\s+/g, ' ').trim() + '\n\n';
+
+            // Simple
+            text += `--- SIMPLIFIED EXPLANATION ---\n\n`;
+            const simpleDiv = document.createElement('div');
+            simpleDiv.innerHTML = buildSimpleParagraph();
+            text += simpleDiv.textContent.replace(/\s+/g, ' ').trim() + '\n\n';
+
+            // Contradictions
+            let foundC = [];
+            contradictions.forEach(c => {
+                let allMatch = true;
+                for (const [layerId, value] of c.conditions) {
+                    if (!selections[layerId] || !selections[layerId].includes(value)) {
+                        allMatch = false;
+                        break;
+                    }
+                }
+                if (allMatch) foundC.push(c);
+            });
+
+            if (foundC.length > 0) {
+                text += `--- INTERNAL CONTRADICTIONS ---\n\n`;
+                foundC.forEach(c => {
+                    text += `⚡ ${c.label}: ${c.question}\n\n`;
+                });
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                const notif = document.getElementById('copy-notif');
+                notif.classList.add('show');
+                setTimeout(() => notif.classList.remove('show'), 2000);
+            });
+        }
+
+        buildLayers();
+    </script>
+</body>
+</html>
